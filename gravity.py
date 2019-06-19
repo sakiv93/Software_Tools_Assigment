@@ -22,7 +22,7 @@ number_of_dimensions = 2
 assert len(POSITIONS) == len(VELOCITIES) == len(MASSES)
 for position in POSITIONS:
     assert len(position) == number_of_dimensions
-for velocity in POSITIONS:
+for velocity in VELOCITIES:
     assert len(velocity) == number_of_dimensions
 
 
