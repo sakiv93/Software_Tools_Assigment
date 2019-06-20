@@ -1,4 +1,5 @@
 from pathlib import Path
+import numpy as np
 
 import matplotlib.pyplot as plt
 
@@ -7,12 +8,12 @@ from tqdm import tqdm
 
 # parameters
 GRAVITATIONAL_CONSTANT = 6.67430e-11  # m^3 kg^-1 s^-2
-POSITIONS = [[-1, 0], [1, 0]]
-VELOCITIES = [[0, -1], [0, 1]]
-MASSES = [4 / GRAVITATIONAL_CONSTANT, 4 / GRAVITATIONAL_CONSTANT]
+POSITIONS = np.array([[-1, 0], [1, 0]])
+VELOCITIES = np.array([[0, -1], [0, 1]])
+MASSES = np.array([4 / GRAVITATIONAL_CONSTANT, 4 / GRAVITATIONAL_CONSTANT])
 TIME_STEP = 0.0001  # s
-NUMBER_OF_TIME_STEPS = 1000000
-PLOT_INTERVAL = 1000
+NUMBER_OF_TIME_STEPS = 2
+PLOT_INTERVAL = 2
 
 # derived variables
 number_of_planets = len(POSITIONS)
@@ -27,6 +28,7 @@ for velocity in VELOCITIES:
 
 
 for step in tqdm(range(NUMBER_OF_TIME_STEPS + 1)):
+    #print(POSITIONS)
     # plotting every single configuration does not make sense
     # if step % PLOT_INTERVAL == 0:
     #     fig, ax = plt.subplots()
@@ -40,7 +42,7 @@ for step in tqdm(range(NUMBER_OF_TIME_STEPS + 1)):
     #     ax.set_xlim(-1.5, 1.5)
     #     ax.set_ylim(-1.5, 1.5)
     #     ax.set_title("t = {:8.4f} s".format(step * TIME_STEP))
-    #     ax.set_xlablsel("x")
+    #     ax.set_xlabel("x")
     #     ax.set_ylabel("y")
     #     output_file_path = Path("positions", "{:016d}.png".format(step))
     #     output_file_path.parent.mkdir(exist_ok=True)
@@ -48,40 +50,51 @@ for step in tqdm(range(NUMBER_OF_TIME_STEPS + 1)):
     #     plt.close(fig)
 
     # the accelerations for each planet are required to update the velocities
-    accelerations = []
-    for i in range(number_of_planets):
-        acceleration = [0, 0]
-        for j in range(number_of_planets):
-            if i == j:
-                continue
+    #$$accelerations = []
+    accelerations = np.array([])
+    #for i in range(number_of_planets):
+        #$$acceleration = [0, 0]
+    acceleration = np.zeros(2)
+        #for j in range(number_of_planets):
+            #if i == j:
+               # continue
 
-            distance_vector = []
-            for coordinate_i, coordinate_j in zip(POSITIONS[i], POSITIONS[j]):
-                distance_vector.append(coordinate_j - coordinate_i)
+            #$$distance_vector = []
+    distance_vector = np.array([])
+            #for coordinate_i, coordinate_j in zip(POSITIONS[i], POSITIONS[j]):
+                #distance_vector=np.append(distance_vector,(coordinate_j - coordinate_i))
+    distance_vector=POSITIONS[1]-POSITIONS[0]
+    #print(distance_vector)
 
-            sum_of_squares = 0
-            for coordinate in distance_vector:
-                sum_of_squares += coordinate ** 2
-            distance_vector_length = sum_of_squares ** (1 / 2)
+    #sum_of_squares = 0
+    #for coordinate in distance_vector:
+        #sum_of_squares += coordinate ** 2
+    distance_vector_length = np.linalg.norm(distance_vector)
 
-            acceleration_contribution = []
-            for coordinate in distance_vector:
-                acceleration_contribution.append(
-                    GRAVITATIONAL_CONSTANT
-                    * MASSES[j]
-                    / distance_vector_length ** 2
-                    * coordinate
-                )
+            #$$acceleration_contribution = []
+    acceleration_contribution = np.array([])
+    #for coordinate in distance_vector:
+                # acceleration_contribution.append(
+                #     GRAVITATIONAL_CONSTANT
+                #     * MASSES[j]
+                #     / distance_vector_length ** 2
+                #     * coordinate
+                # )
+    acceleration_contribution=(GRAVITATIONAL_CONSTANT* MASSES/ distance_vector_length ** 2* distance_vector)
+            #$$for i in range(number_of_dimensions):
+                #$$acceleration[i] += acceleration_contribution[i]
+    acceleration=acceleration_contribution
 
-            for i in range(number_of_dimensions):
-                acceleration[i] += acceleration_contribution[i]
+        #$$accelerations.append(acceleration)
+    accelerations=np.append(accelerations,acceleration)
+    print(accelerations)
+    # position=np.array([])
+    # velocity=np.array([])
+    # for position, velocity in zip(POSITIONS, VELOCITIES):
+    #     for i in range(number_of_dimensions):
+    #         position[i] += TIME_STEP * velocity[i]
 
-        accelerations.append(acceleration)
-
-    for position, velocity in zip(POSITIONS, VELOCITIES):
-        for i in range(number_of_dimensions):
-            position[i] += TIME_STEP * velocity[i]
-
-    for velocity, acceleration in zip(VELOCITIES, accelerations):
-        for i in range(number_of_dimensions):
-            velocity[i] += TIME_STEP * acceleration[i]
+    # for velocity, acceleration in zip(VELOCITIES, accelerations):
+    #     for i in range(number_of_dimensions):
+    #         velocity[i] += TIME_STEP * acceleration[i]
+    
