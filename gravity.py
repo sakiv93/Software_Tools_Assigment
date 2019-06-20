@@ -12,8 +12,8 @@ POSITIONS = np.array([[-1, 0], [1, 0]])
 VELOCITIES = np.array([[0, -1], [0, 1]])
 MASSES = np.array([4 / GRAVITATIONAL_CONSTANT, 4 / GRAVITATIONAL_CONSTANT])
 TIME_STEP = 0.0001  # s
-NUMBER_OF_TIME_STEPS = 2
-PLOT_INTERVAL = 2
+NUMBER_OF_TIME_STEPS = 4
+PLOT_INTERVAL = 4
 
 # derived variables
 number_of_planets = len(POSITIONS)
@@ -28,7 +28,7 @@ for velocity in VELOCITIES:
 
 
 for step in tqdm(range(NUMBER_OF_TIME_STEPS + 1)):
-    #print(POSITIONS)
+    print(POSITIONS)
     # plotting every single configuration does not make sense
     # if step % PLOT_INTERVAL == 0:
     #     fig, ax = plt.subplots()
@@ -87,7 +87,7 @@ for step in tqdm(range(NUMBER_OF_TIME_STEPS + 1)):
 
         #$$accelerations.append(acceleration)
     accelerations=np.append(accelerations,acceleration)
-    print(accelerations)
+    #print(accelerations)
     # position=np.array([])
     # velocity=np.array([])
     # for position, velocity in zip(POSITIONS, VELOCITIES):
@@ -97,4 +97,6 @@ for step in tqdm(range(NUMBER_OF_TIME_STEPS + 1)):
     # for velocity, acceleration in zip(VELOCITIES, accelerations):
     #     for i in range(number_of_dimensions):
     #         velocity[i] += TIME_STEP * acceleration[i]
+    POSITIONS =POSITIONS+(TIME_STEP*VELOCITIES)
+    VELOCITIES =VELOCITIES+(TIME_STEP*accelerations)
     
