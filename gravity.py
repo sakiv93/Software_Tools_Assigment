@@ -61,11 +61,14 @@ for step in tqdm(range(NUMBER_OF_TIME_STEPS)):
         # print('Acceleration:',acceleration)
         accelerations=np.append(accelerations,acceleration,axis=0)
         # print('Accelerations:',accelerations)
-    POSITIONS =np.add(POSITIONS,(TIME_STEP*VELOCITIES))
-    # print('positions:',POSITIONS)
+
+
+    ##Evaluated Velocity before calculating positions which is semi implicit scheme.##
     VELOCITIES =np.add(VELOCITIES,(TIME_STEP*accelerations[1:]))
     # print('velocities:',VELOCITIES)
-#print(POSITIONS)
+    POSITIONS =np.add(POSITIONS,(TIME_STEP*VELOCITIES))
+    # print('positions:',POSITIONS)
+print(POSITIONS)
 
 
 
