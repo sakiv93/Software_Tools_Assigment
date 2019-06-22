@@ -50,14 +50,14 @@ for step in tqdm(range(NUMBER_OF_TIME_STEPS)):
     #     plt.close(fig)
 
     # the accelerations for each planet are required to update the velocities
-    distance_vector=np.array([[0,0]])
+    distance_vector_with_0=np.array([[0,0]])
     for i in range(number_of_planets):
         distance_vector_array=POSITIONS-POSITIONS[i]
         summ=np.sum(distance_vector_array,axis=0)
-        distance_vector_with_0=np.append(distance_vector,[summ],axis=0)
-        distance_vector=distance_vector_with_0[1:,:]
-        print(distance_vector)
-    # distance_vector_length = np.linalg.norm(distance_vector)
+        distance_vector_with_0=np.append(distance_vector_with_0,[summ],axis=0)
+    distance_vector=distance_vector_with_0[1:,:]
+    distance_vector_length = np.linalg.norm(distance_vector)
+    print(distance_vector_length)
     # accelerations=(GRAVITATIONAL_CONSTANT* (MASSES/ distance_vector_length ** 2)* distance_vector)
     # POSITIONS =np.add(POSITIONS,(TIME_STEP*VELOCITIES))
     # VELOCITIES =np.add(VELOCITIES,(TIME_STEP*accelerations))   
