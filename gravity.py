@@ -8,9 +8,9 @@ from tqdm import tqdm
 
 # parameters
 GRAVITATIONAL_CONSTANT = 6.67430e-11  # m^3 kg^-1 s^-2
-POSITIONS = np.array([[-1, 0], [1, 0],[0.5,0.5]])
-VELOCITIES = np.array([[0, -1], [0, 1],[0.5,0.5]])
-MASSES = np.array([4 / GRAVITATIONAL_CONSTANT, 4 / GRAVITATIONAL_CONSTANT,4 / GRAVITATIONAL_CONSTANT])
+POSITIONS = np.array([[-1, 0], [1, 0]])
+VELOCITIES = np.array([[0, -1], [0, 1]])
+MASSES = np.array([[4 / GRAVITATIONAL_CONSTANT],[4 / GRAVITATIONAL_CONSTANT]])
 TIME_STEP = 0.0001  # s
 NUMBER_OF_TIME_STEPS = 1
 PLOT_INTERVAL = 1
@@ -26,7 +26,8 @@ for position in POSITIONS:
 for velocity in VELOCITIES:
     assert len(velocity) == number_of_dimensions
 
-
+POSITIONS_TRACE=np.array(POSITIONS)
+times=np.array([0])
 for step in tqdm(range(NUMBER_OF_TIME_STEPS)):
     #print(POSITIONS)
     # plotting every single configuration does not make sense
@@ -50,26 +51,34 @@ for step in tqdm(range(NUMBER_OF_TIME_STEPS)):
     #     plt.close(fig)
 
     # the accelerations for each planet are required to update the velocities
-    distance_vector_with_0=np.array([[0,0]])
+    accelerations=np.array([[0,0]])
     for i in range(number_of_planets):
-        distance_vector_array=POSITIONS-POSITIONS[i]
-        summ=np.sum(distance_vector_array,axis=0)
-        distance_vector_with_0=np.append(distance_vector_with_0,[summ],axis=0)
-    distance_vector=distance_vector_with_0[1:,:]
-    distance_vector_length = np.linalg.norm(distance_vector)
-    print(distance_vector_length)
-    # accelerations=(GRAVITATIONAL_CONSTANT* (MASSES/ distance_vector_length ** 2)* distance_vector)
-    # POSITIONS =np.add(POSITIONS,(TIME_STEP*VELOCITIES))
-    # VELOCITIES =np.add(VELOCITIES,(TIME_STEP*accelerations))   
-        
-        
-        
-        
-        
-        
+        distance_vector=np.sum(POSITIONS-POSITIONS[i],axis=0)
+        # print('Distance_vector:',distance_vector)
+        distance_vector_length = np.array([[np.linalg.norm(distance_vector)]])
+        # print('Distance_vector_Length:',distance_vector_length)
+        acceleration=(GRAVITATIONAL_CONSTANT* (MASSES[i]/ distance_vector_length ** 2)* distance_vector)
+        # print('Acceleration:',acceleration)
+        accelerations=np.append(accelerations,acceleration,axis=0)
+        # print('Accelerations:',accelerations)
+    POSITIONS =np.add(POSITIONS,(TIME_STEP*VELOCITIES))
+    # print('positions:',POSITIONS)
+    VELOCITIES =np.add(VELOCITIES,(TIME_STEP*accelerations[1:]))
+    # print('velocities:',VELOCITIES)
+#print(POSITIONS)
 
-        # distance_vector_length = np.linalg.norm(distance_vector)
-        # accelerations=(GRAVITATIONAL_CONSTANT* (MASSES/ distance_vector_length ** 2)* distance_vector)
-        # POSITIONS =np.add(POSITIONS,(TIME_STEP*VELOCITIES))
-        # VELOCITIES =np.add(VELOCITIES,(TIME_STEP*accelerations))
+
+
+
+
+
+
+
+
+
+#print(POSITIONS)
+# print(times.shape)
+# fig,ax=plt.subplots()
+# ax.plot(times,POSITIONS_TRACE[:,1])
+# plt.show()
     
