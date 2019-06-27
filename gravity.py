@@ -2,6 +2,7 @@ from pathlib import Path
 import numpy as np
 
 import matplotlib.pyplot as plt
+import scipy
 
 # tqdm is used for a progress bar
 from tqdm import tqdm
@@ -12,8 +13,8 @@ POSITIONS = np.array([[-1, 0], [1, 0]])
 VELOCITIES = np.array([[0, -1], [0, 1]])
 MASSES = np.array([[4 / GRAVITATIONAL_CONSTANT],[4 / GRAVITATIONAL_CONSTANT]])
 TIME_STEP = 0.0001  # s
-NUMBER_OF_TIME_STEPS = 100000
-PLOT_INTERVAL = 1
+NUMBER_OF_TIME_STEPS = 1
+PLOT_INTERVAL = 1000
 
 # derived variables
 number_of_planets = len(POSITIONS)
@@ -29,7 +30,7 @@ for velocity in VELOCITIES:
 
 position_traces=np.reshape(POSITIONS,(1,np.product(POSITIONS.shape)))
 #print(position_traces)
-for step in tqdm(range(NUMBER_OF_TIME_STEPS)):
+for step in tqdm(range(NUMBER_OF_TIME_STEPS+1)):
 	#print(POSITIONS)
 	# plotting every single configuration does not make sense
 	# if step % PLOT_INTERVAL == 0:
@@ -51,29 +52,46 @@ for step in tqdm(range(NUMBER_OF_TIME_STEPS)):
 	#     fig.savefig(output_file_path)
 	#     plt.close(fig)
 
-	# the accelerations for each planet are required to update the velocities
-	accelerations=np.array([[0,0]])
-	for i in range(number_of_planets):
-		distance_vector=np.sum(POSITIONS-POSITIONS[i],axis=0)
-		# print('Distance_vector:',distance_vector)
-		distance_vector_length = np.array([[np.linalg.norm(distance_vector)]])
-		# print('Distance_vector_Length:',distance_vector_length)
-		acceleration=(GRAVITATIONAL_CONSTANT* (MASSES[i]/ distance_vector_length ** 2)* distance_vector)
-		# print('Acceleration:',acceleration)
-		accelerations=np.append(accelerations,acceleration,axis=0)
-		# print('Accelerations:',accelerations)
-
-
-	##Evaluated Velocity before calculating positions which is semi implicit scheme.##
-	POSITIONS =np.add(POSITIONS,(TIME_STEP*VELOCITIES))
-	#print('positions:',POSITIONS)
-	VELOCITIES =np.add(VELOCITIES,(TIME_STEP*accelerations[1:]))
+	distance_vector=POSITIONS[:,np.newaxis,:] - POSITIONS[np.newaxis,:,:]
+	distance_vector_length =np.linalg.norm(distance_vector,axis=-1)
+	print(distance_vector_length)
+	# acceleration=(GRAVITATIONAL_CONSTANT* (MASSES/ distance_vector_length ** 2)* distance_vector)
+	# print(acceleration)
+	# POSITIONS =np.add(POSITIONS,(TIME_STEP*VELOCITIES))
+	# VELOCITIES =np.add(VELOCITIES,(TIME_STEP*acceleration))
+	
+	
+	
+	
+	
 	# print('velocities:',VELOCITIES)
-	##For plotting purpose##
-	position_trace=np.reshape(POSITIONS,(1,np.product(POSITIONS.shape)))
-	#print('position_trace:',position_trace)
-	position_traces=np.append(position_traces,position_trace,axis=0)
-	#print('position_traces:',position_traces)
+	# ##For plotting purpose##
+	# position_trace=np.reshape(POSITIONS,(1,np.product(POSITIONS.shape)))
+	# #print('position_trace:',position_trace)
+	# position_traces=np.append(position_traces,position_trace,axis=0)
+	# print('position_traces:',position_traces)
+
+
+
+
+
+# fig,ax=plt.subplots()
+# ax.plot(position_traces[:,0],position_traces[:,1],position_traces[:,2],position_traces[:,3])
+# plt.show()
+
+# Things to look for
+# np.newaxis
+# scipy.spacial.pdist
+
+
+
+
+
+
+
+
+
+
 
 
 #print(position_traces)
@@ -85,9 +103,4 @@ for step in tqdm(range(NUMBER_OF_TIME_STEPS)):
 # 	fig,ax=plt.subplots()
 # 	ax.plot(position_traces[:,i],position_traces[:,i+1])
 # 	plt.show()
-
-
-fig,ax=plt.subplots()
-ax.plot(position_traces[:,0],position_traces[:,1],position_traces[:,2],position_traces[:,3])
-plt.show()
 
