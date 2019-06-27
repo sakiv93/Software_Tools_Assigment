@@ -13,7 +13,7 @@ POSITIONS = np.array([[-1, 0], [1, 0]])
 VELOCITIES = np.array([[0, -1], [0, 1]])
 MASSES = np.array([[4 / GRAVITATIONAL_CONSTANT],[4 / GRAVITATIONAL_CONSTANT]])
 TIME_STEP = 0.0001  # s
-NUMBER_OF_TIME_STEPS = 1
+NUMBER_OF_TIME_STEPS = 100000
 PLOT_INTERVAL = 1000
 
 # derived variables
@@ -27,9 +27,7 @@ for position in POSITIONS:
 for velocity in VELOCITIES:
 	assert len(velocity) == number_of_dimensions
 
-
-position_traces=np.reshape(POSITIONS,(1,np.product(POSITIONS.shape)))
-#print(position_traces)
+positions_trace=[POSITIONS]
 for step in tqdm(range(NUMBER_OF_TIME_STEPS+1)):
 	#print(POSITIONS)
 	# plotting every single configuration does not make sense
@@ -52,36 +50,25 @@ for step in tqdm(range(NUMBER_OF_TIME_STEPS+1)):
 	#     fig.savefig(output_file_path)
 	#     plt.close(fig)
 
-	distance_vector=POSITIONS[:,np.newaxis,:] - POSITIONS[np.newaxis,:,:]
+	distance_vector_3d=POSITIONS[:,np.newaxis,:] - POSITIONS[np.newaxis,:,:]
+	distance_vector=np.sum(distance_vector_3d,axis=0)
 	distance_vector_length =np.linalg.norm(distance_vector,axis=-1)
-	print(distance_vector_length)
-	# acceleration=(GRAVITATIONAL_CONSTANT* (MASSES/ distance_vector_length ** 2)* distance_vector)
-	# print(acceleration)
-	# POSITIONS =np.add(POSITIONS,(TIME_STEP*VELOCITIES))
-	# VELOCITIES =np.add(VELOCITIES,(TIME_STEP*acceleration))
-	
-	
-	
-	
-	
-	# print('velocities:',VELOCITIES)
-	# ##For plotting purpose##
-	# position_trace=np.reshape(POSITIONS,(1,np.product(POSITIONS.shape)))
-	# #print('position_trace:',position_trace)
-	# position_traces=np.append(position_traces,position_trace,axis=0)
-	# print('position_traces:',position_traces)
+	acceleration=(GRAVITATIONAL_CONSTANT* (MASSES/ distance_vector_length ** 2)* distance_vector)
+	POSITIONS =np.add(POSITIONS,(TIME_STEP*VELOCITIES))
+	positions_trace.append(POSITIONS)
+	VELOCITIES =np.add(VELOCITIES,(TIME_STEP*acceleration))
+
+#Array to store position data over iterations for plotting trace of the planets
+positions_trace=np.array(positions_trace)
 
 
+fig,ax=plt.subplots()
+ax.plot(positions_trace[0,0,0],positions_trace[0,0,1],marker='*')
+ax.plot(positions_trace[0,1,0],positions_trace[0,1,1],marker='^')
+ax.plot(positions_trace[:,0,0],positions_trace[:,0,1],positions_trace[:,1,0],positions_trace[:,1,1])
+plt.show()
 
 
-
-# fig,ax=plt.subplots()
-# ax.plot(position_traces[:,0],position_traces[:,1],position_traces[:,2],position_traces[:,3])
-# plt.show()
-
-# Things to look for
-# np.newaxis
-# scipy.spacial.pdist
 
 
 
