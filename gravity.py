@@ -13,7 +13,7 @@ POSITIONS = np.array([[-1, 0], [1, 0]])
 VELOCITIES = np.array([[0, -1], [0, 1]])
 MASSES = np.array([[4 / GRAVITATIONAL_CONSTANT],[4 / GRAVITATIONAL_CONSTANT]])
 TIME_STEP = 0.0001  # s
-NUMBER_OF_TIME_STEPS = 100000
+NUMBER_OF_TIME_STEPS = 1000000
 PLOT_INTERVAL = 1000
 
 # derived variables
@@ -63,31 +63,9 @@ positions_trace=np.array(positions_trace)
 
 
 fig,ax=plt.subplots()
+ax.plot(positions_trace[:,0,0],positions_trace[:,0,1],positions_trace[:,1,0],positions_trace[:,1,1])
 ax.plot(positions_trace[0,0,0],positions_trace[0,0,1],marker='*')
 ax.plot(positions_trace[0,1,0],positions_trace[0,1,1],marker='^')
-ax.plot(positions_trace[:,0,0],positions_trace[:,0,1],positions_trace[:,1,0],positions_trace[:,1,1])
+ax.set(xlabel='X(m)',ylabel='Y(m)',title='Trace of the planets')
 plt.show()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#print(position_traces)
-
-# plot_traces=position_traces.transpose()
-# print(plot_traces)
-
-# for i in range(0,(2*len(POSITIONS)),2):
-# 	fig,ax=plt.subplots()
-# 	ax.plot(position_traces[:,i],position_traces[:,i+1])
-# 	plt.show()
 
