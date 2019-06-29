@@ -62,13 +62,15 @@ for step in tqdm(range(NUMBER_OF_TIME_STEPS+1)):
 		v_sum=np.zeros_like(xc_2d)
 		for i in range(number_of_planets):
 			v=potential_at_mesh(xc_2d,yc_2d,MASSES[i],POSITIONS[i])
+			#v_sum is used to add potentials due to each planet
 			v_sum=v_sum+v
 		fig, ax = plt.subplots()
 		ax.pcolormesh(xv_2d,yv_2d,v_sum)
-		##im=plt.imshow(stress,origin='lower',extent=(x_start,x_end,y_start,y_end),aspect='equal',vmin=-0.1e9,cmap='RdBu')
+		ax.set(xlabel='Position x (m)',ylabel='Position y (m)')
+		im=plt.imshow(v_sum,origin='lower',extent=(x_start,x_end,y_start,y_end),aspect='equal',vmin=-0.1e9,cmap='RdBu')
 		##plt.colorbar();
 		plt.colorbar()
-		output_file_path = Path("positions", "{:016d}.png".format(step))
+		output_file_path = Path("Potentials", "{:016d}.png".format(step))
 		output_file_path.parent.mkdir(exist_ok=True)
 		fig.savefig(output_file_path)
 		plt.close(fig)
