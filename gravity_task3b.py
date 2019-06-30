@@ -13,7 +13,7 @@ POSITIONS = np.array([[-1, 0], [1, 0]])
 VELOCITIES = np.array([[0, -1], [0, 1]])
 MASSES = np.array([[4 / GRAVITATIONAL_CONSTANT],[4 / GRAVITATIONAL_CONSTANT]])
 TIME_STEP = 0.0001  # s
-NUMBER_OF_TIME_STEPS = 10000
+NUMBER_OF_TIME_STEPS = 1000000
 PLOT_INTERVAL = 1000
 
 # derived variables
@@ -52,7 +52,7 @@ yc=np.linspace(y_start+(dy/2),y_end-(dy/2),no_pixels_y)
 xv_2d,yv_2d=np.meshgrid(xv,yv)
 xc_2d,yc_2d=np.meshgrid(xc,yc)
 
-#potentials=potential(0.,0.,MASSES[0],POSITIONS[0])
+
 
 positions_trace=[POSITIONS]
 for step in tqdm(range(NUMBER_OF_TIME_STEPS+1)):
@@ -65,11 +65,14 @@ for step in tqdm(range(NUMBER_OF_TIME_STEPS+1)):
 			#v_sum is used to add potentials due to each planet
 			v_sum=v_sum+v
 		fig, ax = plt.subplots()
-		ax.pcolormesh(xv_2d,yv_2d,v_sum)
+		ax.pcolormesh(xv_2d,yv_2d,v_sum,cmap='RdBu')
 		ax.set(xlabel='Position x (m)',ylabel='Position y (m)')
 		im=plt.imshow(v_sum,origin='lower',extent=(x_start,x_end,y_start,y_end),aspect='equal',vmin=-0.1e9,cmap='RdBu')
-		##plt.colorbar();
 		plt.colorbar()
+		#For lines display
+		cs=plt.contour(xc_2d,yc_2d,v_sum,cmap='gray_r')
+		#For values display
+		plt.clabel(cs, fmt='%1.1e'); 
 		output_file_path = Path("Potentials", "{:016d}.png".format(step))
 		output_file_path.parent.mkdir(exist_ok=True)
 		fig.savefig(output_file_path)
