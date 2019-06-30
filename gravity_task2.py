@@ -54,4 +54,3 @@ for step in tqdm(range(NUMBER_OF_TIME_STEPS+1)):
 	acceleration=(GRAVITATIONAL_CONSTANT* (MASSES/ distance_vector_length ** 2)* distance_vector)
 	POSITIONS =np.add(POSITIONS,(TIME_STEP*VELOCITIES))
 	VELOCITIES =np.add(VELOCITIES,(TIME_STEP*acceleration))
-print(POSITIONS)
